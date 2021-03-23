@@ -1,13 +1,10 @@
 #pragma once
-class Iterator
+template <typename T> class Iterator
 {
-private:
-	int i = 0;
 public:
-	virtual ~Iterator() = default;
-	virtual void start() {}
-	virtual int getValue();
-	virtual void next() {}
-	virtual bool finish();
+	virtual void start() = 0;
+	virtual T getValue() = 0;
+	virtual void next() = 0;
+	virtual bool finish() = 0;
 };
 
