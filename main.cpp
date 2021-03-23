@@ -18,7 +18,4 @@ int main() {
       it.next();
    }
    it.start();
-   while(!it.finish()){
-      cout << "Пидор";
-   }
 }

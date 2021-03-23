@@ -16,7 +16,7 @@ private:
 	int size = 0;
 public:
 
-	class iterator_list : virtual public Iterator<T> {
+	class iterator_list : public Iterator {
 		private:
 			node<T>* pointer_;
 			node<T>* head_;
@@ -31,11 +31,16 @@ public:
 		};
 
 
-	RingedList();
+	inline RingedList() : buf_(nullptr), head_(nullptr), list_(nullptr) {}
 	RingedList(const RingedList&);
 	RingedList(RingedList&&);
-	void init();
-	inline void push(Iterator<T>& it, T value) override {
+	inline void init() {
+		buf_->next = buf_->prev = head_;
+		head_ -> next = head_->prev = buf_;
+		head_->value = 0;
+		list_ = head_;
+	}
+	inline void push(Iterator& it, T value) override {
 		iterator_list itr;
 		itr = dynamic_cast<iterator_list&>(it);
 		list_->next->value = value;
@@ -44,20 +49,21 @@ public:
 		buf_->prev = list_;
 		buf_->next = head_;
 	};
-	inline T pop(Iterator<T> it) override {
+	inline T pop(Iterator& it) override {
 		size--;
-		iterator_list itr;
-		itr = dynamic_cast<iterator_list&>(it);
-		
+		node<T>* temp = list_->prev;
+		buf_ = list_;
+		buf_->value = 0;
+		T value = it.getValue();
+		delete list_;
+		list_ = temp;
+		return value;
 	};
-	inline Iterator<T> find(T value) override {
+	inline iterator_list& find(T value) override {
 		iterator_list it;
 		it.start();
 		while(it.getValue()!=value || !it.finish()){
 			it.next();
-		}
-		if(it.getValue() != value){
-			return iterator_list();
 		}
 		return it;
 	}
@@ -71,7 +77,7 @@ public:
 	inline bool isEmpty() override {
 		return size == 0;
 	};
-    inline Iterator<T> getHead() override {
+    inline iterator_list& getHead() override {
 		iterator_list it(head_);
 		it.start();
 		return it;
@@ -79,17 +85,22 @@ public:
     inline int length() override {
 		return size;
 	};
-	RingedList<T> operator=(RingedList<T>&& a){
+	RingedList<T>& operator=(RingedList<T>&& a){
 		buf_ = a.buf_;
 		head_ = a.head_;
 		list_ = a.list_;
 		delete a.buf_;
 		delete a.head_;
 		delete a.list_;
+		return *this;
 	}
-	RingedList<T> operator=(const RingedList<T>& a){
+	RingedList<T>& operator=(const RingedList<T>& a){
+		if(this == &a){
+			return *this;
+		}
 		buf_ = a.buf_;
 		head_ = a.head_;
 		list_ = a.list_;
+		return *this;
 	}
 };
