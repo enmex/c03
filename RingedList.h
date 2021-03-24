@@ -1,6 +1,7 @@
 #pragma once
 #include "List.h"
 #include "Iterator.h"
+#include <iostream>
 template <typename T>
 struct node {
 	T value;
@@ -18,16 +19,20 @@ public:
 
 	class iterator_list : public Iterator {
 		private:
-			node<T>* pointer_;
-			node<T>* head_;
+			node<T>* list_;
+			int i;
+			int size;
 		public:
-			iterator_list() : pointer_(nullptr), head_(nullptr){}
-			iterator_list(const RingedList& a) : pointer_(a.list_), head_(a.head_) {}
-			iterator_list(node<T>* head_) : head_(head_) {}
-			void start() override { pointer_ = head_;}
-			T getValue() override { return pointer_->value; }
-			void next() override{pointer_ = pointer_->next;}
-			bool finish() override {return pointer_->next == nullptr;}
+			iterator_list() : i(0), size(0) {}
+			iterator_list(const RingedList& a) : i(0), size(a.size), list_(a.list_) {}
+			void init(node<T>* list_) {this->list_ = list_;}
+			void start() override {
+				 i = 0;}
+			T getValue() override { return list_->value; }
+			void next() override{
+				list_ = list_->next;
+				}
+			bool finish() override {return list_->next == nullptr;}
 		};
 
 
@@ -35,19 +40,32 @@ public:
 	RingedList(const RingedList&);
 	RingedList(RingedList&&);
 	inline void init() {
-		buf_->next = buf_->prev = head_;
-		head_ -> next = head_->prev = buf_;
+		list_ = new node<T>;
+		head_ = list_;
 		head_->value = 0;
-		list_ = head_;
-	}
-	inline void push(Iterator& it, T value) override {
-		iterator_list itr;
-		itr = dynamic_cast<iterator_list&>(it);
-		list_->next->value = value;
-		list_ = list_->next;
-		buf_ = buf_->next;
-		buf_->prev = list_;
+		buf_ = new node<T>;
 		buf_->next = head_;
+		buf_->prev = head_;
+		head_ -> next = buf_;
+		head_->prev = buf_;
+	}
+	inline void push(const Iterator& it, T value) override {
+		/*
+		Node* temp = new Node;
+		temp = list;
+		temp->x = y;
+		temp->next=list->next;
+		list=temp;
+		*/
+		size++;
+		node<T>* temp = reinterpret_cast<iterator_list>(it).pointer_;
+		temp->value = value;
+		temp->next_ = buf_;
+		buf_->prev = temp;
+		temp->prev = list_;
+		list_ = temp;
+		delete temp;
+		reinterpret_cast<iterator_list>(it).init(list_);
 	};
 	inline T pop(Iterator& it) override {
 		size--;
@@ -72,13 +90,11 @@ public:
 		delete head_;
 		delete buf_;
 		init();
-
 	}
 	inline bool isEmpty() override {
 		return size == 0;
 	};
     inline iterator_list& getHead() override {
-		iterator_list it(head_);
 		it.start();
 		return it;
 	};

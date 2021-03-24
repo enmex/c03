@@ -2,9 +2,9 @@
 class Iterator
 {
 public:
-	virtual void start();
-	virtual int getValue();
-	virtual void next();
-	virtual bool finish();
+	virtual void start()=0;
+	virtual int getValue()=0;
+	virtual void next()=0;
+	virtual bool finish()=0;
 };
 
