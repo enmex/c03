@@ -2,33 +2,34 @@
 #include "List.h"
 #include "Iterator.h"
 #include <iostream>
-template <typename T>
-class RingedList : public List<T>
+class RingedList : public List
 {
 private:
-	T* list = nullptr;
+	int* list = nullptr;
 	int buf;
 	int size = 0;
 	int current_size =0;
 public:
-	class iterator_list : public Iterator<T> {
+	class iterator_list : public Iterator {
 		private:
 			int i;
-			RingedList<T>* list = nullptr;
+			RingedList* list = nullptr;
 		public:
-			explicit iterator_list(RingedList<T>&);
+			explicit iterator_list(RingedList*);
 			void start();
-			T getValue();
+			int getValue();
 			void next();
 			bool finish();
 		};
-	RingedList(); //default size = 10
-	RingedList(int size);
+	inline RingedList();
+	inline ~RingedList();
+    RingedList(int size);
 	RingedList(const RingedList&); //copy
 	RingedList(RingedList&&); //move
-	void push(const iterator_list&, T);
-	T pop(iterator_list&);
-	iterator_list& find(T);
+
+	void push(const iterator_list&, int);
+	int del(iterator_list&);
+	iterator_list& find(int);
 	void clear();
 	bool isEmpty();
 	int length();
