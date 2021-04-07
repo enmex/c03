@@ -9,7 +9,7 @@ private:
 	int* list = nullptr;
 	int buf;
 	int size = 0;
-	int current_size =0;
+	int current_size = 0;
 public:
 	class iterator_list : public Iterator {
 		private:
@@ -23,14 +23,14 @@ public:
 			bool finish();
 			int getPos();
 		};
-	inline RingedList();
-	inline ~RingedList();
+	RingedList();
+	~RingedList();
     RingedList(int size);
 	RingedList(const RingedList&); //copy
 	RingedList(RingedList&&); //move
 
-	void push(iterator_list&, int);
-	int del(iterator_list&);
+	void push(Iterator&, int);
+	int del(Iterator&);
 	iterator_list& find(int);
 	void clear();
 	bool isEmpty();

@@ -1,5 +1,5 @@
 #include "RingedList.h"
-RingedList::RingedList() : size(10), current_size(0), buf(size) {
+RingedList::RingedList() : size(10), current_size(0), buf(10) {
 	list = new int[size + 1];
 }
 RingedList::~RingedList(){
@@ -22,34 +22,48 @@ RingedList::RingedList(RingedList&& list) : list(list.list), size(list.size), cu
 	list.current_size = 0;
 	list.size = 0;
 }
-void RingedList::push(iterator_list& it, int value){
-	if(it.getPos() > buf){
+void RingedList::push(Iterator& it, int value){
+	iterator_list* iter = dynamic_cast<iterator_list*>(&it);
+	if(iter->getPos() > buf){
 		throw ListException(ExceptionType::ITERATOR_OUT_OF_RANGE);
 	}
-	list[it.getPos()] = value;
+	if(iter->getPos()!=buf){
+		current_size++;
+	}
+	list[iter->getPos()] = value;
 }
-int RingedList::del(iterator_list& it){
+int RingedList::del(Iterator& it){
+	iterator_list* iter = dynamic_cast<iterator_list*>(&it);
 	if(current_size == 0){
 		throw ListException(ExceptionType::EMPTY_LIST);
 	}
-	if(it.getPos() > buf){
+	if(iter->getPos() > buf){
 		throw ListException(ExceptionType::ITERATOR_OUT_OF_RANGE);
 	}
-	int temp = it.getValue();
+	int temp = iter->getValue();
 	current_size--;
+	int k = 0;
+	int* tempList = new int[current_size];
+	for(int i = 0; i < current_size+1; i++){
+		if(i!=iter->getPos()){
+			tempList[k] = list[i];
+			k++;
+		}
+	}
+	list = tempList;
 	return temp;
 }
 RingedList::iterator_list& RingedList::find(int value){
-	iterator_list it(this);
-	while(it.getValue() != value && !it.finish()){
-		it.next();
+	iterator_list *it = new iterator_list(this);
+	it->start();
+	while(it->getValue() != value && !it->finish()){
+		it->next();
 	}
-	return it;
+	return *it;
 }
 void RingedList::clear(){
 	delete list;
 	list = new int[size+1];
-	current_size = 0;
 	buf = size;
 }
 bool RingedList::isEmpty(){
@@ -59,8 +73,8 @@ int RingedList::length(){
 	return current_size;
 }
 RingedList::iterator_list& RingedList::getHead(){
-	iterator_list it(this);
-	return it;
+	iterator_list* it = new iterator_list(this);
+	return *it;
 }
 
 RingedList::iterator_list::iterator_list(RingedList* list) : list(list), i(0) {}
@@ -72,10 +86,10 @@ int RingedList::iterator_list::getValue(){
 	return list->list[i];
 }
 void RingedList::iterator_list::next(){
-	i = (i+1) % list->current_size; 
+	i = (i+1) % list->size; 
 }
 bool RingedList::iterator_list::finish(){
-	return i = list->current_size;
+	return i == list->current_size-1;
 }
 int RingedList::iterator_list::getPos(){
 	return i;
