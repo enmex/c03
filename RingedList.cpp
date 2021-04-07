@@ -10,7 +10,7 @@ RingedList::~RingedList(){
 }
 RingedList::RingedList(int size) : size(size), current_size(0), buf(size+1) {
 	if(size <= 0){
-		//выбросить исключение
+		throw ListException(ExceptionType::WRONG_SIZE);
 	}
 	list = new int[size + 1];
 }
@@ -22,15 +22,18 @@ RingedList::RingedList(RingedList&& list) : list(list.list), size(list.size), cu
 	list.current_size = 0;
 	list.size = 0;
 }
-void RingedList::push(const iterator_list& it, int value){
-	if(it.i > buf){
-		//выбросить исключение
+void RingedList::push(iterator_list& it, int value){
+	if(it.getPos() > buf){
+		throw ListException(ExceptionType::ITERATOR_OUT_OF_RANGE);
 	}
-	list[it.i] = value;
+	list[it.getPos()] = value;
 }
 int RingedList::del(iterator_list& it){
 	if(current_size == 0){
-		//выбросить исключение
+		throw ListException(ExceptionType::EMPTY_LIST);
+	}
+	if(it.getPos() > buf){
+		throw ListException(ExceptionType::ITERATOR_OUT_OF_RANGE);
 	}
 	int temp = it.getValue();
 	current_size--;
@@ -73,4 +76,7 @@ void RingedList::iterator_list::next(){
 }
 bool RingedList::iterator_list::finish(){
 	return i = list->current_size;
+}
+int RingedList::iterator_list::getPos(){
+	return i;
 }

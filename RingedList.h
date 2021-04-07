@@ -1,5 +1,6 @@
 #pragma once
 #include "List.h"
+#include "ListException.h"
 #include "Iterator.h"
 #include <iostream>
 class RingedList : public List
@@ -20,6 +21,7 @@ public:
 			int getValue();
 			void next();
 			bool finish();
+			int getPos();
 		};
 	inline RingedList();
 	inline ~RingedList();
@@ -27,7 +29,7 @@ public:
 	RingedList(const RingedList&); //copy
 	RingedList(RingedList&&); //move
 
-	void push(const iterator_list&, int);
+	void push(iterator_list&, int);
 	int del(iterator_list&);
 	iterator_list& find(int);
 	void clear();

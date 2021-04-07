@@ -2,7 +2,7 @@
 #include "Iterator.h"
 class List{
 public:
-	virtual void push(const Iterator&, int)=0;
+	virtual void push(Iterator&, int)=0;
 	virtual int del(Iterator&)=0;
 	virtual Iterator& find(int)=0;
 	virtual void clear()=0;
