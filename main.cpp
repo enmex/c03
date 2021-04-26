@@ -1,33 +1,17 @@
 #include <iostream>
-#include "RingedList.h"
+#include "circle_list.h"
 using namespace std;
 
 int main() {
-    RingedList* list = new RingedList();
-    RingedList::iterator_list it(list);
-    for(int i = 0; i < 10; i++){
-        list->push(it, it.getPos());
-        it.next();
+    int size = 10;
+    circle_list* circle = new circle_list(size);
+    for(int i = 0; i < size; i++){
+        circle->push(i+1);
     }
-    it.start();
-    while(!it.finish()){
-        cout << it.getValue() << " ";
-        it.next();
+    circle_list::iterator_list* iterator = circle->begin();
+    while(!iterator->finish()){
+        cout << iterator->getValue()->value << "->";
+        iterator->next();
     }
-    cout << it.getValue() << endl;
-
-    it.start();
-    RingedList::iterator_list res = list->find(6);
-    cout << "position for 6: " << res.getPos() << endl;
-
-    cout << "checking delete of 6" << endl;
-    cout << "size before is " << list->length() << endl;
-    list->del(res); //удаляем 6
-    cout << "size after is " << list->length() << endl;
-    cout << "List after delete: ";
-    while(!it.finish()){
-        cout << it.getValue() << " ";
-        it.next();
-    }
-    cout << it.getValue() << endl;
+    cout << endl;
 }

@@ -5,7 +5,8 @@
 enum ExceptionType {
     WRONG_SIZE,
     EMPTY_LIST,
-    ITERATOR_OUT_OF_RANGE
+    ITERATOR_OUT_OF_RANGE,
+    FULL_LIST
 };
 
 class ListException{
@@ -25,6 +26,9 @@ public:
                 break;
             case ITERATOR_OUT_OF_RANGE:
                 return "Выход итератора за границы списка";
+                break;
+            case FULL_LIST:
+                return "Список переполнен";
                 break;
             default:
                 break;
