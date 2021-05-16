@@ -38,6 +38,7 @@ void circle_list::push(int value){
 		throw ListException(ExceptionType::FULL_LIST);
 	}
 	list_* temp = new list_;
+	//тут короче мы создаем элемент пихаем в него значение а затем делаем кучу отсоединений и присоединений , чтобы этот элемент вставить в список
 	temp->value = value;
 	temp->next = list;
 	temp->prev = buf;
@@ -51,7 +52,7 @@ void circle_list::push(int value){
 int circle_list::del(){
 	if(current == 0){
 		throw ListException(ExceptionType::EMPTY_LIST);
-	}
+	}//если список пустой то выбрасывается исключение
 	int x = iter->getValue()->value;
 	list = iter->getValue();
 	list_* prev = iter->getValue()->prev;
@@ -62,14 +63,14 @@ int circle_list::del(){
 	current--;
 	return x;
 }
-circle_list::iterator_list* circle_list::find(int value){
+circle_list::iterator_list* circle_list::find(int value){ //здесь мы находим элемент с помощью итеоратора
 	iter->start();
 	while(iter->getValue()->value != value && !iter->finish()){
 		iter->next();
 	}
 	return iter;
 }
-void circle_list::clear(){
+void circle_list::clear(){ //очищаем список
 	while(list!=buf){
 		list = list->next;
 		free(list->prev);
@@ -82,7 +83,7 @@ bool circle_list::isEmpty(){
 int circle_list::length(){
 	return current;
 }
-circle_list::iterator_list* circle_list::getHead(){
+circle_list::iterator_list* circle_list::getHead(){ //получить итератор на головной элемент
 	iter->start();
 	return iter;
 }
@@ -95,13 +96,13 @@ void circle_list::iterator_list::start(){
 list_* circle_list::iterator_list::getValue(){
 	return circle->list;
 }
-void circle_list::iterator_list::next(){
+void circle_list::iterator_list::next(){ //сдвиг итератора это перемещение указателя
 	circle->list = circle->list->next;
 }
-bool circle_list::iterator_list::finish(){
+bool circle_list::iterator_list::finish(){ //конец наступает тогда, когда указатель указывает на буфер
 	return circle->list == circle->buf;
 }
-circle_list::iterator_list* circle_list::begin(){
+circle_list::iterator_list* circle_list::begin(){ //это специальный метод для инициализации итератора 
 	iter = new iterator_list(this);
 	iter->start();
 	return iter;

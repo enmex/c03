@@ -1,5 +1,9 @@
 #pragma once
 #include "Iterator.h"
+/*
+это виртуальный класс списка
+тут перечислены основные методы виртуальные которые мы потом реализуем в классе
+*/
 class List{
 public:
 	virtual void push(int)=0;

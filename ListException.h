@@ -9,6 +9,10 @@ enum ExceptionType {
     FULL_LIST
 };
 
+/*
+    тут класс исключений для списка
+*/
+
 class ListException{
 private:
     ExceptionType exception;
